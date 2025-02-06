@@ -1,0 +1,306 @@
+---
+title: "DIY Functions"
+author: "Rehana Hajee"
+date: "DATA 2401"
+output: 
+  slidy_presentation: 
+    theme: cosmo
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Writing your own functions!
+
+Built in functions are great, but you can write your own too! If you find yourself doing the same sequence of commands over and over in your code, it's good practice to write a function to do that sequence. 
+
+> If you want to change what the function does, you only need to change it in one place instead of several.
+
+
+# Learn by example: 
+
+```{r name function}
+# A function named "make_name" that takes two arguments
+# and returns them put together
+make_full_name <- function(first_name, last_name) {
+  # This is the function body
+  # You do your stuff in here. 
+  # You can reference the arguments by name to "use" those values 
+  full_name <- paste(first_name, last_name)
+  
+  # Functions _return_ the value of the last line
+  full_name
+}
+
+# Call this function with my name
+my_name <- make_full_name(first_name = "AJ", last_name = "Shoemaker")
+
+# Finally, I can check and display the variable
+my_name
+```
+
+
+Functions are quite similar to variables, they're really just a value that you assign to a name. BUT you use the `function() { }` syntax to tell R that you're making a function that does something inside those brackets, and you're not just storing a value. 
+
+Tip: Name your functions clearly, and using the verbs that say what they're doing. 
+
+# Parts of a Function
+
+- **Arguments:** You're using the syntax `function(...)` to tell R you're making a function. The names/words you're putting *inside* those parentheses are the names of the variables that you'll pass to the function when you use it. In the example, when I called the function with the two strings inside the parentheses, the first string was assigned to the `first_name` variable, and the second string was assigned to the `last_name` variable. 
+  + You can make these names anything you want, it helps if they're informative. You will use this name to refer to the value inside the function body. 
+  + **Something important to note** These variables are only available *inside* the function. Once the function is done executing, `first_name`, `last_name` and `full_name` aren't available anymore. This is a concept called **scope**; the variables no longer exist outside the scope of the function. 
+
+# Parts of a Function
+
+- **Body:** The body of the function is what's between the curly braces, `{ }`, and the typical style is to put the opening bracket after the arguments, and the closing bracket on it's own line below everything
+
+```{r eval = F}
+example_function <- function(arg1, arg2) {  # note the space before the {
+  compute <- c(stuff, here)
+  out # Returns the last line
+} # This bracket pairs with the one on the first line
+```
+
+
+All the code you want to run go between these brackets. Any code that you can write outside of a function is code that you can write inside one. It can have as much code as you want, create new variables (inside the scope of the function), and call other functions. 
+
+# Parts of a Function
+
+- **Return Value:** The last thing that gets evaluated in the function will get **returned** by the function. 
+
+> A good rule of thumb is that whatever would get printed to the console if you ran the code outside a function is what will be returned.  
+
+If you want to be specific/explicit, you can state what value gets returned by using the `return()` function. 
+
+```{r}
+# Calculate the area of a rectangle
+calculate_circle_area <- function(radius) {
+  return(pi * radius^2)
+}
+```
+
+This is most common if you're returning a value before the function is complete (we'll get to how that can happen in a minute). You don't have to use this `return()` statement if you don't want to, the two examples below both do the same thing as the function above:
+
+```{r}
+# Calculate the area of a circle
+calculate_circle_area <- function(radius) {
+  area <- pi * radius^2  # if we stopped here, nothing would return from the function
+  area                   # we have to explicitly evaluate the variable (have it "print to the console")
+}
+
+# Calculate the area of a circle
+calculate_circle_area <- function(radius) {
+  # you can also skip the storing it to a variable step
+  pi * radius^2 # you can just return it straight from the computation
+}
+```
+
+
+Now, these function you've made work just like the pre-made functions! When you call it, R takes the values you pass it as arguments, use them in the function, evaluate all the code, and return the last expression. 
+
+```{r}
+# compute the area of a circle with radius 2
+calculate_circle_area(2)
+# or 
+calculate_circle_area(radius = 2)
+
+```
+
+Once you run the definition code for the function, you can see it up in your environment, it's a variable you've defined! You can see what it looks like by running the name of the function without the `()`. 
+
+```{r}
+calculate_circle_area
+```
+
+Note that you'll need to rerun the function to use it in the future, you should either put it up at the top of your script, or put it in a separate script (perhaps with all your different functions you've made) and have your "main" script `source()` the function script. 
+
+
+# Exercise
+
+1. Write your own function that takes the temperature in Fahrenheit as an argument and returns the Celcius equivalent. 
+2. Expand that function so that it takes a temperature in Fahrenheit and a distance in feet and returns **both** the temperature in Celcius and the distance in meters (you'll likely need to remember the `c()` function!)
+
+```{R convert_fn}
+convert = function(fahrenheit, feet) {
+  celsius = ((fahrenheit - 32) * (5/9))
+  meters = feet * 0.3048
+  return(c(celsius, meters))
+}
+convert(32, 3)
+
+```
+
+# Conditional Statements
+ 
+Code and functions can (obviously) be more complicated than the examples above. One of the ways we can control how the code flows is by setting different instructions that run based on different conditions, by using **conditional statements**. 
+
+What's this? Essentially, we're doing:
+
+```
+IF something is true
+  do this chunk of code
+OTHERWISE
+  do this other chunk of code
+```
+
+In R, we use the keywords `if` and `else`. This looks like:
+```{r eval = F}
+# A conditional statement setup
+if (condition) {
+  # lines of code that run if `condition` is TRUE
+} else {
+  #lines of code that run if `condition` is FALSE
+}
+```
+
+Note the style of how these are lined up. You can leave out the else if you want, if you don't need anything to happen if the condition is false. 
+
+What is this `condition`? It's a variable or an expression that gives a `TRUE` or `FALSE`.
+
+```{r}
+#Evaluating conditional statements:
+
+# setting a variable for coffee cups
+num_coffees <- "2"
+
+# If you've had more than 4 coffees, the program enters and computes the first code block
+# If you've had 4 or less, the program enters and computes the second code block.
+if (num_coffees > 4) {
+  print("No more coffee for you, that's enough.")
+} else {
+  print("Sure, have another cup")
+}
+
+```
+
+## Else if
+
+What if you have more than two options you want to split up into? `else if` lets you check a second conditional statement: 
+
+```
+IF something is true
+  do this chunk of code
+ELSE IF this other thing is true
+  do THIS chunk of code
+OTHERWISE
+  do this other chunk of code
+```
+
+> Note: If the first and second conditional statements are both true, only the first code chunk will run. 
+
+```{r}
+
+num_coffees <- 3
+# Adding an else if statement that insists on coffee if num_coffees == 0
+if (num_coffees > 4) {
+  print("No more coffee for you")
+} else if (num_coffees == 0) {
+  print("Go get coffee now!!")
+} else {
+  print("Sure, have another cup")
+}
+```
+
+
+These conditional statements make it so that only one of these blocks of code will be run. 
+
+
+# A note here
+
+Typically, R doesn't do much in-line user input, because it's not a language geared for that sort of thing. 
+
+Very rarely do you write functions that ask for user input, because the user is often you, and the output is a report that is going to someone else. 
+
+Obviously, that will change if you're looking at things like dashboards and interactive graphs, but for things like this, don't bother with writing console prompts for input or output. Just set `coffee <- 4`! 
+
+---
+## Inside a function 
+
+Let's take this coffee if statement and put it inside a function. 
+
+> Note: We're not using console input here, just taking the number of coffees as an argument to the function. This is a common setup for "user input" - pass it as a variable! 
+
+```{r}
+# make a more_coffee function
+
+more_coffee <- function(num_coffees){
+  if (num_coffees > 4) {
+    print("No more coffee for you")
+  } else if (num_coffees == 0) {
+    print("Go get coffee now!!")
+  } else {
+    print("Sure, have another cup")
+  }
+}
+
+```
+
+```{r}
+# use it! 
+more_coffee(4)
+more_coffee(num_coffees = 6)
+more_coffee(0)
+```
+
+
+## If inside a function, with return()
+
+Since only one of these sections of code will be run, it's useful to use  `return()` statements here. 
+
+Let's make a function that ups the number of coffees, if it's less than 4, and keeps it the same otherwise.
+
+```{r}
+get_coffee <- function(current_cups){
+  if (current_cups <= 4){
+    return(current_cups + 1)
+  } else {
+    return(current_cups)
+  }
+}
+
+## how do we use this?
+cups <- 3
+cups <- get_coffee(cups)
+cups
+cups <- get_coffee(cups)
+cups
+cups <- get_coffee(cups)
+cups
+cups <- get_coffee(cups)
+cups
+```
+
+
+# Function Debugging
+
+Last, but certainly not least, you're going to need to fix the errors you make. Before, when you were running a single line of code, R would give you an error that pointed to a specific variable that was "not found" or that a built-in function had too many or not enough arguments. But now, with your functions you wrote yourself, you can't just run the functions one line at a time. 
+
+Why not? When you call the function, you pass arguments to the input variables, and the function then uses those.
+
+Variables you make inside the function are *NOT* available outside the function. 
+
+> Variables you make inside the function are *NOT* available outside the function. 
+
+```
+Variables you make inside the function are *NOT* available outside the function. 
+```
+
+
+```{r}
+calculate_circle_area <- function(radius) {
+  area <- pi * radius^2 
+  area                   
+}
+
+# this runs
+calculate_circle_area(3)
+
+# this doesn't 
+# area
+```
+
+
+## In-Class Lab 
+
+Complete the work in the in class lab, link available on Canvas! 

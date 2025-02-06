@@ -1,6 +1,6 @@
 ---
 title: "In Class Lab - DIY Functions"
-author: "Dr. Shoemaker"
+author: "Rehana Hajee"
 date: "DATA 2401"
 output: html_document
 ---
@@ -16,7 +16,10 @@ The questions from your notes today are below, please copy your answers them her
 1. Write your own function that takes the temperature in Fahrenheit as an argument and returns the Celcius equivalent. 
 
 ```{R}
-
+convert = function(fahrenheit) {
+  celsius = ((fahrenheit - 32) * (5/9))
+  return(celsius)
+}
 
 ```
 
@@ -24,7 +27,11 @@ The questions from your notes today are below, please copy your answers them her
 
 
 ```{r}
-
+convert = function(fahrenheit, feet) {
+  celsius = ((fahrenheit - 32) * (5/9))
+  meters = feet * 0.3048
+  return(c(celsius, meters))
+}
 
 ```
 
@@ -32,25 +39,53 @@ The questions from your notes today are below, please copy your answers them her
 3. Write a function that prints out a statement of whether the number passed as an argument is positive, negative or 0. 
 
 ```{R}
-
-
+num_sign = function(num){
+  if (num > 0) {
+    print('The number is positive.')
+  } else if (num == 0) {
+    print('The number is zero.')
+  } else {
+    print('The number is negative.')
+  }
+}
+num_sign(-5)
+num_sign(7)
+num_sign(0)
 ```
 
 4. Write a function that returns the absolute value of the number passed as an argument.
    + Don't use `abs()`. Use the flow from problem 1 and multiply by negative one as necessary. 
    
 ```{r}
-
-
+absValue = function(num){
+  if (num >= 0){
+    return(num)
+  }else if (num < 0){
+    return(num * -1)
+  }
+}
+absValue(0)
+absValue(-1)
+absValue(3)
 ```
 
 5. Hard mode: add an error check to that function that prints out the string "Please pass a numerical value to this function" if the user passes the function a string. 
    + There are functions that check and return T/F: `is.numeric()` or `is.character()` would be relevant here
    
 ```{r}
-
-
-
+absValue = function(num){
+  if (is.character(num)){
+    print('Please pass a numerical value to this function.')
+  }else if (num >= 0){
+    return(num)
+  }else if (num < 0){
+    return(num * -1)
+  }
+}
+absValue(0)
+absValue(-1)
+absValue(3)
+absValue('Ten')
 ```
    
    
